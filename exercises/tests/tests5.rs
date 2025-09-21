@@ -22,7 +22,7 @@
 // Execute `rustlings hint tests5` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+
 
 /// # Safety
 ///
@@ -33,7 +33,8 @@ unsafe fn modify_by_address(address: usize) {
     // comment of the test below as your format reference.
     unsafe {
         //todo!("Your code goes here")
-        address = 0xAABBCCDD;
+        let ptr = address as *mut u32 ;
+        *ptr = 0xAABBCCDD;
     }
 }
 
