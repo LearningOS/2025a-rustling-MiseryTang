@@ -79,15 +79,45 @@ impl<T> LinkedList<T> {
                 }
             }
         }*/
-        let mut list_c = LinkedList::<T>::new();
-        while let Some(a) = list_a::start{
+        let mut x = list_a.start;
+        let mut y = list_b.start;
+        if y.is_none() {
+            return list_a;
+        }
+        if x.is_none() {
+            return list_b;
+        }
+        while let (Some(x_pr) , Some(y_pr)) = (x , y) {
+            unsafe{
+                    let x_next = (*x_pr.as_ptr()).next;
+                    (*x_pr.as_ptr()).next = Some(y_pr);
+                    let y_next = (*y_pr.as_ptr()).next;
+                    (*y_pr.as_ptr()).next = x_next;
+                        
+                    x = x_next;
+                    y = y_next;
+                }
+        }
             
+        if x.is_some() {
+            return Self {
+            length: list_a.length + list_b.length,
+            start: list_a.start,
+            end: list_a.end,
+            };
         }
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        if y.is_some() {
+            return Self {
+            length: list_a.length + list_b.length,
+            start: list_b.start,
+            end: list_b.end,
+            };
         }
+		return Self {
+            length: list_a.length + list_b.length,
+            start: list_a.start,
+            end: list_b.end,
+        };
 	}
 }
 
