@@ -2,12 +2,12 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
-
+use std::mem::swap;
 #[derive(Debug)]
 struct Node<T> {
     val: T,
@@ -70,6 +70,8 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+     where
+        T: PartialOrd + Clone,
 	{
 		//TODO
         /*if let Some(a) = list_a::start {
@@ -81,43 +83,47 @@ impl<T> LinkedList<T> {
         }*/
         let mut x = list_a.start;
         let mut y = list_b.start;
+        let mut list_c = LinkedList::new(); 
         if y.is_none() {
             return list_a;
         }
         if x.is_none() {
             return list_b;
         }
-        while let (Some(x_pr) , Some(y_pr)) = (x , y) {
-            unsafe{
-                    let x_next = (*x_pr.as_ptr()).next;
-                    (*x_pr.as_ptr()).next = Some(y_pr);
-                    let y_next = (*y_pr.as_ptr()).next;
-                    (*y_pr.as_ptr()).next = x_next;
-                        
-                    x = x_next;
-                    y = y_next;
+        while let (Some(x_pr) , Some(y_pr)) = (x,y) {
+            unsafe {
+                if (*x_pr.as_ptr()).val < (*y_pr.as_ptr()).val {
+                    list_c.add((*x_pr.as_ptr()).val.clone());
+                    x = (*x_pr.as_ptr()).next;
+                    Box::from_raw(x_pr.as_ptr());
                 }
+                else{
+                    list_c.add((*y_pr.as_ptr()).val.clone());
+                    y = (*y_pr.as_ptr()).next;
+                    Box::from_raw(y_pr.as_ptr());
+                }
+            }
         }
             
         if x.is_some() {
-            return Self {
-            length: list_a.length + list_b.length,
-            start: list_a.start,
-            end: list_a.end,
-            };
+            while let Some(x_pr) = x{
+                unsafe{
+                    list_c.add((*x_pr.as_ptr()).val.clone());
+                    x = (*x_pr.as_ptr()).next;
+                    Box::from_raw(x_pr.as_ptr());
+                }
+            } 
         }
         if y.is_some() {
-            return Self {
-            length: list_a.length + list_b.length,
-            start: list_b.start,
-            end: list_b.end,
-            };
+            while let Some(y_pr) = y{
+                unsafe{
+                    list_c.add((*y_pr.as_ptr()).val.clone());
+                    y = (*y_pr.as_ptr()).next;
+                    Box::from_raw(y_pr.as_ptr());
+                }
+            }
         }
-		return Self {
-            length: list_a.length + list_b.length,
-            start: list_a.start,
-            end: list_b.end,
-        };
+		list_c
 	}
 }
 
