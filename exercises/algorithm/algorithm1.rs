@@ -79,7 +79,7 @@ impl<T> LinkedList<T> {
                 }
             }
         }*/
-        let list_c = List
+        let mut list_c = LinkedList::<T>::new();
         while let Some(a) = list_a::start{
             
         }
